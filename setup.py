@@ -27,11 +27,13 @@ class CodeComplianceCommand(distutils.core.Command):
     user_options = [
         ("pep8", None, "Perform pep8 checks"),
         ("pylint", None, "Perform pylint checks"),
+        ("test", None, "Perform unit/functional tests"),
     ]
 
     def initialize_options(self):
         self.pep8 = False
         self.pylint = False
+        self.test = False
 
     def finalize_options(self):
         pass
@@ -50,6 +52,10 @@ class CodeComplianceCommand(distutils.core.Command):
         if self.pylint:
             print "Running pylint checks..."
             self.output_process("./tools/pylint")
+
+        if self.test:
+            print "Running unit/functional tests..."
+            self.output_process("./tools/run_tests")
 
 
 setuptools.setup(
