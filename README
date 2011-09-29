@@ -24,4 +24,5 @@ Common Developer Tasks
 > $ python setup.py test
 > $ python setup.py pep8
 > $ python setup.py pylint
-> $ python setup.py develop
+> $ python setup.py develop (not available on all systems)
+> $ python setup.py install 
