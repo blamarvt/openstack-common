@@ -1,0 +1,27 @@
+Openstack Common
+================
+Provides components which are re-used across multiple OpenStack projects. Each
+component provided by openstack-common should be generic enough to stand on it's
+own and should ideally already be in use by one or more OpenStack projects.
+
+Good examples of generic components which should be transitioned to
+openstack-common include:
+
+ * Logging
+ * Configuration
+ * i18n Translation
+ * Database
+ * WSGI
+ * AMQP
+ * Performance metrics
+
+OpenStack projects are not required to use the code provided by openstack-common,
+but it is highly recommended. 
+
+
+Common Developer Tasks
+----------------------
+> $ python setup.py test
+> $ python setup.py pep8
+> $ python setup.py pylint
+> $ python setup.py develop

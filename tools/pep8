@@ -1,0 +1,4 @@
+#!/bin/bash
+
+FILES=`find src/openstack/ -name "*.py"`
+pep8 --repeat --show-pep8 --show-source $FILES

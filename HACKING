@@ -1,0 +1,44 @@
+OpenStack Common Style Guidelines
+=================================
+
+1) Before submitting code, always run:
+    1a) python setup.py test
+    1b) python setup.py pep8
+    1c) python setup.py pylint
+
+2) Import modules, not objects/classes
+3) Only use absolute imports
+4) Imports should be organized in human alphabetical order
+5) Imports should be grouped as such:
+
+  {{stdlib imports in alphabetical order}}
+  \n
+  {{openstack-common imports in alphabetical order}}
+  \n
+  {{third party imports in alphabetical order}}
+  \n
+  \n
+  {{begin your code}}
+
+6) Two newlines should separate 'toplevel' code
+7) One newline should separate methods in classes
+8) Your name should appear in all TODO comments
+9) Reserved words and built-ins must not be over overridden
+10) Double quotes, not single quotes
+
+
+Import Ordering Example
+-----------------------
+  #!/usr/bin/python
+
+  import httplib
+  import logging
+  import random
+  import StringIO
+  import time
+  import unittest
+
+  from openstack import flags
+  from openstack import test
+  from openstack.common import law
+  import openstack.common.example
