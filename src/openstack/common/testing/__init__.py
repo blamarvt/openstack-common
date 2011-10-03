@@ -5,28 +5,34 @@ import time
 import nose.core
 
 
-class TestRunner(object):
-
-    def __init__(self, strategy=None):
-        """Initialize a test runner.
-
-        :param strategy: Class used to determine how tests are run
-        :returns: None
-
-        """
-        self._strategy = strategy or NoseTestRunStrategy()
+class NoseTestRunner(object):
 
     def run(self, test_directory, argv=None):
-        """Run tests, outputting results to sys.stdout.
+        """Initialize a nose-specific test running strategy.
 
-        :param argv: The input arguments, normally sys.argv
+        :param test_directory: A directory containing tests to run.
+        :param argv: The input arguments, defaults to sys.arg
         :returns: A valid return code, normally passed to sys.exit
 
         """
-        return self._strategy.run(test_directory, argv)
+        argv = argv or sys.argv
+
+        config = nose.config.Config(stream=sys.stdout,
+                                    env=os.environ,
+                                    verbosity=2,
+                                    workingDir=test_directory,
+                                    plugins=nose.core.DefaultPluginManager())
+
+        runner = _NoseTextTestRunner(stream=config.stream,
+                                     verbosity=config.verbosity,
+                                     config=config)
+
+        return not nose.core.run(config=config,
+                                 testRunner=runner,
+                                 argv=argv)
 
 
-class _TestResult(nose.result.TextTestResult):
+class _NoseTestResult(nose.result.TextTestResult):
     """Customized `nose.results.TextTestResult`."""
 
     _colorizers = [
@@ -58,7 +64,8 @@ class _TestResult(nose.result.TextTestResult):
             self.stream.writeln(test_case_name)
             self.stream.writeln("")
 
-class _TextTestRunner(nose.core.TextTestRunner):
+
+class _NoseTextTestRunner(nose.core.TextTestRunner):
     """Customized `nose.core:TextTestRunner`."""
 
     def __init__(self, *args, **kwargs):
@@ -68,11 +75,11 @@ class _TextTestRunner(nose.core.TextTestRunner):
 
     def _makeResult(self):
         """Overrides original _makeResult."""
-        return _TestResult(self.stream,
-                           self.descriptions,
-                           self.verbosity,
-                           self.config,
-                           show_elapsed=self.show_elapsed)
+        return _NoseTestResult(self.stream,
+                               self.descriptions,
+                               self.verbosity,
+                               self.config,
+                               show_elapsed=self.show_elapsed)
 
     def _writeSlowestTests(self, slow_tests):
         """Show the N slowests tests."""
@@ -87,33 +94,6 @@ class _TextTestRunner(nose.core.TextTestRunner):
     def run(self, test):
         """Overrides original 'run' method to display slow tests."""
         test_results = nose.core.TextTestRunner.run(self, test)
-        if self.show_elapsed and test_results.slow_tests:
-           self._writeSlowestTests(test_results.slow_tests)
+        if self.show_elapsed and test_results._slow_tests:
+           self._writeSlowestTests(test_results._slow_tests)
         return test_results
-
-
-class NoseTestRunStrategy(object):
-
-    def run(self, test_directory, argv=None):
-        """Initialize a nose-specific test running strategy.
-
-        :param test_directory: A directory containing tests to run.
-        :param argv: The input arguments, defaults to sys.arg
-        :returns: A valid return code, normally passed to sys.exit
-
-        """
-        argv = argv or sys.argv
-
-        config = nose.config.Config(stream=sys.stdout,
-                                    env=os.environ,
-                                    verbosity=2,
-                                    workingDir=test_directory,
-                                    plugins=nose.core.DefaultPluginManager())
-
-        runner = TextTestRunner(stream=config.stream,
-                                verbosity=config.verbosity,
-                                config=config)
-
-        return not nose.core.run(config=config,
-                                 testRunner=runner,
-                                 argv=argv)
