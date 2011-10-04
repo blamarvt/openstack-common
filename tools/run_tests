@@ -27,7 +27,7 @@ def main():
 
     config = nose.config.Config(stream=sys.stdout,
                                 env=os.environ,
-                                verbosity=2,
+                                verbosity=3,
                                 workingDir=test_directory,
                                 plugins=nose.core.DefaultPluginManager())
 
