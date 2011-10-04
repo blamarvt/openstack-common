@@ -18,19 +18,26 @@
 import os
 import sys
 
+import nose.core
+
 
 def main():
+    """Run tests using `nose`."""
     test_directory = os.path.abspath("%s/../.." % __file__)
-    common_directory = os.path.abspath("%s/../../src/" % __file__)
 
-    # It kills me to do this, but there is a chicken vs. egg scenario here:
-    #     1) openstack.common.testing:TestRunner (for pretty tests)
-    #     2) The OpenStack Common project's test suite should use itself
-    sys.path.append(common_directory)
+    config = nose.config.Config(stream=sys.stdout,
+                                env=os.environ,
+                                verbosity=2,
+                                workingDir=test_directory,
+                                plugins=nose.core.DefaultPluginManager())
 
-    import openstack.common.testing
-    test_runner = openstack.common.testing.TestRunner()
-    return not test_runner.run(test_directory, argv=sys.argv)
+    runner = nose.core.TextTestRunner(stream=config.stream,
+                                      verbosity=config.verbosity,
+                                      config=config)
+
+    return not nose.core.run(config=config,
+                             testRunner=runner,
+                             argv=sys.argv)
 
 
 if __name__ == '__main__':
