@@ -12,14 +12,3 @@
 #    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #    License for the specific language governing permissions and limitations
 #    under the License.
-
-import unittest2 as unittest
-
-
-class TestTestsAreRunning(unittest.TestCase):
-    """When there are no tests, we need to make sure tests work!"""
-
-    def test_tests_are_running(self):
-        """This should always pass."""
-        self.assertTrue(True)
-
