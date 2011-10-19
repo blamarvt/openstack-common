@@ -1,17 +1,14 @@
 import webob.dec
 
 
-class Request(webob.Request):
-    pass
-
-
 class Middleware(object):
-    """WSGI Middleware."""
+    """WSGI middleware class."""
 
     def __init__(self, application):
+        """Initialize middleware which will wrap the given application."""
         self.application = application
 
-    def process_request(self, req):
+    def _process_request(self, request):
         """Called on each request.
 
         If this returns None, the next application down the stack will be
@@ -21,14 +18,17 @@ class Middleware(object):
         """
         return None
 
-    def process_response(self, response):
+    def _process_response(self, response):
         """Do whatever you'd like to the response."""
         return response
 
-    @webob.dec.wsgify(RequestClass=Request)
-    def __call__(self, req):
-        response = self.process_request(req)
-        if response:
-            return response
-        response = req.get_response(self.application)
-        return self.process_response(response)
+    @webob.dec.wsgify
+    def __call__(self, request):
+        """Called on every request through this middleware."""
+        response = self._process_request(request)
+
+        if response is None:
+            response = request.get_response(self.application)
+            response = self._process_response(response)
+
+        return response

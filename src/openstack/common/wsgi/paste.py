@@ -2,7 +2,12 @@ import openstack.common.wsgi.base
 
 
 class Application(object):
-    """Paste WSGI application."""
+    """Paste WSGI application.
+
+    This class is used when you want to ensure WSGI applications are compatible
+    with `paste` deploy files.
+
+    """
 
     @classmethod
     def factory(cls, global_config, **local_config):
@@ -33,10 +38,8 @@ class Application(object):
 class Filter(openstack.common.wsgi.base.Middleware):
     """Paste WSGI middleware.
 
-    These classes require an application to be
-    initialized that will be called next.  By default the middleware will
-    simply call its wrapped app, or you can override __call__ to customize its
-    behavior.
+    This class is used when you want to ensure WSGI middleware is compatible
+    with `paste` deploy files.
 
     """
 

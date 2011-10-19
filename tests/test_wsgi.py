@@ -43,10 +43,10 @@ class MiddlewareTestCase(unittest.TestCase):
 
     def test_middleware_process_request(self):
         @webob.dec.wsgify
-        def process_request(request):
+        def _process_request(request):
             return webob.Response("process_request")
 
-        self.middleware.process_request = process_request
+        self.middleware._process_request = _process_request
         expected = "process_request"
         actual = self.middleware(self.request).body
 
@@ -54,10 +54,10 @@ class MiddlewareTestCase(unittest.TestCase):
 
     def test_middleware_process_response(self):
         @webob.dec.wsgify
-        def process_response(request):
+        def _process_response(request):
             return webob.Response("process_response")
 
-        self.middleware.process_response = process_response
+        self.middleware._process_response = _process_response
         expected = "process_response"
         actual = self.middleware(self.request).body
 

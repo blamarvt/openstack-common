@@ -13,4 +13,4 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-"""Contains code which must be used in multiple OpenStack projects."""
+"""WSGI-related code common to multiple OpenStack projects."""
