@@ -1,3 +1,5 @@
+"""Base class for other `openstack.common.wsgi` classes."""
+
 import webob.dec
 
 
@@ -8,7 +10,7 @@ class Middleware(object):
         """Initialize middleware which will wrap the given application."""
         self.application = application
 
-    def _process_request(self, request):
+    def _process_request(self, _request):  # pylint: disable=R0201
         """Called on each request.
 
         If this returns None, the next application down the stack will be
@@ -18,7 +20,7 @@ class Middleware(object):
         """
         return None
 
-    def _process_response(self, response):
+    def _process_response(self, response):  # pylint: disable=R0201
         """Do whatever you'd like to the response."""
         return response
 

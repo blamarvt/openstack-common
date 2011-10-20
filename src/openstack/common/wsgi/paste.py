@@ -10,7 +10,7 @@ class Application(object):
     """
 
     @classmethod
-    def factory(cls, global_config, **local_config):
+    def factory(cls, _global_config, **local_config):
         """Used for paste app factories in paste.deploy config files.
 
         Any local configuration (that is, values under the [app:APPNAME]
@@ -44,7 +44,7 @@ class Filter(openstack.common.wsgi.base.Middleware):
     """
 
     @classmethod
-    def factory(cls, global_config, **local_config):
+    def factory(cls, _global_config, **local_config):
         """Used for paste app factories in paste.deploy config files.
 
         Any local configuration (that is, values under the [filter:APPNAME]
