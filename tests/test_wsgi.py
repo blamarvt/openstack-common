@@ -20,6 +20,7 @@ import unittest2 as unittest
 import webob.dec
 
 import openstack.common.wsgi.base
+import openstack.common.wsgi.middleware.auth
 
 
 class MiddlewareTestCase(unittest.TestCase):
@@ -62,3 +63,23 @@ class MiddlewareTestCase(unittest.TestCase):
         actual = self.middleware(self.request).body
 
         self.assertEqual(expected, actual)
+
+
+class ApplicationTestCase(unittest.TestCase):
+    """Tests for base WSGI application class."""
+
+    def test_wsgi_app_unimplemented(self):
+        """Simple base WSGI app test."""
+        request = webob.Request.blank("/")
+        app = openstack.common.wsgi.base.Application()
+
+        with self.assertRaises(NotImplementedError):
+            app(request)
+
+
+class AuthTestCase(unittest.TestCase):
+    """Test cases for auth WSGI middleware."""
+
+    def test_auth_with_invalid_auth_url(self):
+        """Unable to connect to auth URL."""
+        pass

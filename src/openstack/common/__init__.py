@@ -14,3 +14,8 @@
 #    under the License.
 
 """Contains code which must be used in multiple OpenStack projects."""
+
+import gettext
+
+
+gettext.install("openstack.common", unicode=1)

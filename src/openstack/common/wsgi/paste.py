@@ -1,7 +1,7 @@
 import openstack.common.wsgi.base
 
 
-class Application(object):
+class Application(openstack.common.wsgi.base.Application):
     """Paste WSGI application.
 
     This class is used when you want to ensure WSGI applications are compatible
