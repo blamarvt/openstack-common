@@ -87,3 +87,7 @@ class TokenAuth(openstack.common.wsgi.base.Middleware):
         request.headers["X-Tenant-ID"] = tenant_id
         request.headers["X-User"] = user_name
         request.headers["X-Role"] = ",".join(roles)
+
+
+class PasteTokenAuth(TokenAuth, openstack.common.wsgi.paste.Filter):
+    pass
