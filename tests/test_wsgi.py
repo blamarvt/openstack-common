@@ -103,3 +103,4 @@ class AuthTestCase(unittest.TestCase):
     def test_auth_with_invalid_auth_url(self):
         """Unable to connect to auth URL."""
         middleware = auth_middleware.TokenAuth(self.app, None)
+        middleware(self.request)
