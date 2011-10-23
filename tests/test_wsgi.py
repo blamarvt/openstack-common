@@ -82,10 +82,10 @@ class AuthTestCase(unittest.TestCase):
     """Test cases for auth WSGI middleware."""
 
     def _create_client(self, auth_url):
-        pass
+        return self.admin_client
 
     def _validate_token(self, token):
-        pass
+        return self.token_response
 
     @webob.dec.wsgify
     def _test_app(request):
@@ -100,6 +100,18 @@ class AuthTestCase(unittest.TestCase):
         auth_middleware.TokenAuth._create_client = self._create_client
         auth_middleware.TokenAuth._validate_token = self._validate_token
 
-    def test_auth_with_invalid_auth_url(self):
-        """Unable to connect to auth URL."""
+        # Fake admin client
+        class AdminClient(object):
+            def __init__(self, test_class):
+                self._tc = test_class
+
+            def validate_token(self, token):
+                return self._tc.token_response
+
+        self.admin_client = AdminClient(self)
+        self.token_response = None
+
+    def test_auth_with_invalid_token(self):
+        """Unable to validate token and client returns None."""
         middleware = auth_middleware.TokenAuth(self.app, None)
+        middleware(self.request)
