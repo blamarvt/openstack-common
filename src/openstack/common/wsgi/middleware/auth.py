@@ -21,7 +21,13 @@
 
 import webob
 
+try:
+    import keystone.client
+except ImportError:
+    keystone = None
+
 import openstack.common.wsgi.base
+import openstack.common.wsgi.paste
 
 
 class TokenAuth(openstack.common.wsgi.base.Middleware):
@@ -36,6 +42,14 @@ class TokenAuth(openstack.common.wsgi.base.Middleware):
         """
         super(TokenAuth, self).__init__(application)
         self._auth_url = auth_url
+        self._client = self._create_client(auth_url)
+
+    @staticmethod
+    def _create_client(auth_url):
+        """Create and return a client to use for token validation."""
+        if keystone is None:
+            raise ImportError("keystone.client")
+        return keystone.client.AdminClient(auth_url)
 
     def _reject_request(self):
         """Reject a request by raising an HTTP 401 exception.
@@ -57,7 +71,7 @@ class TokenAuth(openstack.common.wsgi.base.Middleware):
                   cannot be validated.
 
         """
-        pass
+        return self._client.validate_token(token)
 
     def _process_request(self, request):
         """Authenticate the given request.

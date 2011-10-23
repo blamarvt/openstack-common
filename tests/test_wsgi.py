@@ -15,12 +15,13 @@
 
 import os
 import subprocess
+import sys
 
 import unittest2 as unittest
 import webob.dec
 
 import openstack.common.wsgi.base
-import openstack.common.wsgi.middleware.auth
+import openstack.common.wsgi.middleware.auth as auth_middleware
 
 
 class MiddlewareTestCase(unittest.TestCase):
@@ -80,6 +81,25 @@ class ApplicationTestCase(unittest.TestCase):
 class AuthTestCase(unittest.TestCase):
     """Test cases for auth WSGI middleware."""
 
+    def _create_client(self, auth_url):
+        pass
+
+    def _validate_token(self, token):
+        pass
+
+    @webob.dec.wsgify
+    def _test_app(request):
+        return webob.Response("test_auth")
+
+    def setUp(self):
+        """Run before each test."""
+        self.request = webob.Request.blank("/")
+        self.app = self._test_app
+
+        # Stub out points
+        auth_middleware.TokenAuth._create_client = self._create_client
+        auth_middleware.TokenAuth._validate_token = self._validate_token
+
     def test_auth_with_invalid_auth_url(self):
         """Unable to connect to auth URL."""
-        pass
+        middleware = auth_middleware.TokenAuth(self.app, None)
