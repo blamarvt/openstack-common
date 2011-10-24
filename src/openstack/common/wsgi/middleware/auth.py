@@ -24,7 +24,7 @@ import webob
 try:
     import keystone.client
 except ImportError:
-    keystone = None
+    keystone = None  # pylint: disable=C0103
 
 import openstack.common.wsgi.base
 import openstack.common.wsgi.paste

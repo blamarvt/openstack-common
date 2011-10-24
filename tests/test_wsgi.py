@@ -19,8 +19,10 @@ import sys
 
 import unittest2 as unittest
 import webob.dec
+import webob.exc
 
 import openstack.common.wsgi.base
+import openstack.common.wsgi.paste
 import openstack.common.wsgi.middleware.auth as auth_middleware
 
 
@@ -81,6 +83,20 @@ class ApplicationTestCase(unittest.TestCase):
 class AuthTestCase(unittest.TestCase):
     """Test cases for auth WSGI middleware."""
 
+    _VALID_RESPONSE = {
+        "access": {
+            "user": {
+                "name": "test_user",
+                "roles": [{
+                    "name": "role1",
+                },
+                {
+                    "name": "role2",
+                }],
+            },
+        },
+    }
+
     def _create_client(self, auth_url):
         return self.admin_client
 
@@ -88,7 +104,7 @@ class AuthTestCase(unittest.TestCase):
         return self.token_response
 
     @webob.dec.wsgify
-    def _test_app(request):
+    def _test_app(self, request):
         return webob.Response("test_auth")
 
     def setUp(self):
@@ -98,7 +114,6 @@ class AuthTestCase(unittest.TestCase):
 
         # Stub out points
         auth_middleware.TokenAuth._create_client = self._create_client
-        auth_middleware.TokenAuth._validate_token = self._validate_token
 
         # Fake admin client
         class AdminClient(object):
@@ -111,7 +126,23 @@ class AuthTestCase(unittest.TestCase):
         self.admin_client = AdminClient(self)
         self.token_response = None
 
+    def test_auth_with_no_token(self):
+        """Unable to validate token because it is not passed."""
+        middleware = auth_middleware.TokenAuth(self.app, None)
+        with self.assertRaises(webob.exc.HTTPUnauthorized):
+            middleware(self.request)
+
     def test_auth_with_invalid_token(self):
-        """Unable to validate token and client returns None."""
+        """Unable to validate token, validate_token returns None."""
+        self.request.headers["X-Auth-Token"] = "invalid_token"
+        middleware = auth_middleware.TokenAuth(self.app, None)
+        with self.assertRaises(webob.exc.HTTPUnauthorized):
+            middleware(self.request)
+
+    def test_auth_with_valid_token(self):
+        """Unable to validate token, validate_token returns object."""
+        self.request.headers["X-Auth-Token"] = "valid_token"
+        self.token_response = self._VALID_RESPONSE
+
         middleware = auth_middleware.TokenAuth(self.app, None)
         middleware(self.request)
