@@ -21,11 +21,6 @@
 
 import webob
 
-try:
-    import keystone.client
-except ImportError:
-    keystone = None  # pylint: disable=C0103
-
 import openstack.common.wsgi.base
 import openstack.common.wsgi.paste
 
@@ -33,23 +28,19 @@ import openstack.common.wsgi.paste
 class TokenAuth(openstack.common.wsgi.base.Middleware):
     """WSGI middleware for authenticating via HTTP header tokens."""
 
-    def __init__(self, application, auth_url):
+    def __init__(self, application, auth_client):
         """Initialize TokenAuth middleware.
 
+        The authentication client passed in must support a method for
+        validating tokens, and should be able to provide the URL of the
+        Keystone endpoint it has been configured to use.
+
         :param application: The WSGI application we're wrapping
-        :param auth_url: The external authentication location
+        :param auth_client: The client to use when authenticating tokens
 
         """
         super(TokenAuth, self).__init__(application)
-        self._auth_url = auth_url
-        self._client = self._create_client(auth_url)
-
-    @staticmethod
-    def _create_client(auth_url):
-        """Create and return a client to use for token validation."""
-        if keystone is None:
-            raise ImportError("keystone.client")
-        return keystone.client.AdminClient(auth_url)
+        self._client = auth_client
 
     def _reject_request(self):
         """Reject a request by raising an HTTP 401 exception.
@@ -59,19 +50,9 @@ class TokenAuth(openstack.common.wsgi.base.Middleware):
 
         """
         body_msg = _("Authentication Required")
-        header_msg = _("Authenticate at %s") % self._auth_url
+        header_msg = _("Authenticate at %s") % self._client.auth_url
         headers = [("WWW-Authenticate", header_msg)]
         raise webob.exc.HTTPUnauthorized(body_msg, headers)
-
-    def _validate_token(self, token):
-        """Validate the given token.
-
-        :param token: String token of a non-specific length
-        :returns: Response from the authentication service, or None if token
-                  cannot be validated.
-
-        """
-        return self._client.validate_token(token)
 
     def _process_request(self, request):
         """Authenticate the given request.
@@ -87,7 +68,7 @@ class TokenAuth(openstack.common.wsgi.base.Middleware):
         if token is None:
             raise self._reject_request()
 
-        auth_response = self._validate_token(token)
+        auth_response = self._client.validate_token(token)
 
         if auth_response is None:
             raise self._reject_request()

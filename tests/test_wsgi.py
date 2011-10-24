@@ -112,37 +112,36 @@ class AuthTestCase(unittest.TestCase):
         self.request = webob.Request.blank("/")
         self.app = self._test_app
 
-        # Stub out points
-        auth_middleware.TokenAuth._create_client = self._create_client
-
-        # Fake admin client
+        # Simple AdminClient for tests
         class AdminClient(object):
             def __init__(self, test_class):
                 self._tc = test_class
 
+            @property
+            def auth_url(self):
+                return self._tc.auth_url
+
             def validate_token(self, token):
                 return self._tc.token_response
 
-        self.admin_client = AdminClient(self)
+        self.client = AdminClient(self)
         self.token_response = None
+        self.auth_url = "http://example.com"
+        self.middleware = auth_middleware.TokenAuth(self.app, self.client)
 
     def test_auth_with_no_token(self):
         """Unable to validate token because it is not passed."""
-        middleware = auth_middleware.TokenAuth(self.app, None)
         with self.assertRaises(webob.exc.HTTPUnauthorized):
-            middleware(self.request)
+            self.middleware(self.request)
 
     def test_auth_with_invalid_token(self):
         """Unable to validate token, validate_token returns None."""
         self.request.headers["X-Auth-Token"] = "invalid_token"
-        middleware = auth_middleware.TokenAuth(self.app, None)
         with self.assertRaises(webob.exc.HTTPUnauthorized):
-            middleware(self.request)
+            self.middleware(self.request)
 
     def test_auth_with_valid_token(self):
         """Unable to validate token, validate_token returns object."""
         self.request.headers["X-Auth-Token"] = "valid_token"
         self.token_response = self._VALID_RESPONSE
-
-        middleware = auth_middleware.TokenAuth(self.app, None)
-        middleware(self.request)
+        self.middleware(self.request)
