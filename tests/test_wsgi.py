@@ -22,8 +22,23 @@ import webob.dec
 import webob.exc
 
 import openstack.common.wsgi.base
-import openstack.common.wsgi.paste
+import openstack.common.wsgi.paste as wsgi_paste
 import openstack.common.wsgi.middleware.auth as auth_middleware
+
+
+class PasteTestCase(unittest.TestCase):
+    """Tests for `paste` deploy classes."""
+
+    def test_app(self):
+        global_conf = {}
+        local_conf = {}
+        result = wsgi_paste.Application.factory(global_conf, **local_conf)
+
+    def test_filter(self):
+        global_conf = {}
+        local_conf = {}
+        paste_filter = wsgi_paste.Filter.factory(global_conf, **local_conf)
+        paste_filter(None)
 
 
 class MiddlewareTestCase(unittest.TestCase):
