@@ -27,7 +27,7 @@ Run PEP8 compliance task:
 Run pylint code compliance task:
     ``$ tools/pylint``
 
-Run tests and show tests coverage report:
+Run tests and show test coverage report:
     ``$ nosetests``
 
 Install this checkout locally, not overriding system libraries:
