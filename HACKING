@@ -2,9 +2,9 @@ OpenStack Common Style Guidelines
 =================================
 
 1) Before submitting code, always run:
-    1a) python setup.py test
-    1b) python setup.py pep8
-    1c) python setup.py pylint
+    1a) nosetests
+    1b) tools/pep8
+    1c) tools/pylint
 
 2) Import modules, not objects/classes
 3) Only use absolute imports
@@ -13,9 +13,9 @@ OpenStack Common Style Guidelines
 
   {{stdlib imports in alphabetical order}}
   \n
-  {{openstack-common imports in alphabetical order}}
-  \n
   {{third party imports in alphabetical order}}
+  \n
+  {{openstack-common imports in alphabetical order}}
   \n
   \n
   {{begin your code}}
@@ -37,6 +37,8 @@ Import Ordering Example
   import StringIO
   import time
   import unittest
+
+  import httplib2
 
   from openstack import flags
   from openstack import test

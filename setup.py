@@ -15,47 +15,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-import distutils.core
-import subprocess
-
 import setuptools
-
-
-class CodeComplianceCommand(distutils.core.Command):
-
-    description = "check for various code compliance violations"
-    user_options = [
-        ("pep8", None, "Perform pep8 checks"),
-        ("pylint", None, "Perform pylint checks"),
-        ("test", None, "Perform unit/functional tests"),
-    ]
-
-    def initialize_options(self):
-        self.pep8 = False
-        self.pylint = False
-        self.test = False
-
-    def finalize_options(self):
-        pass
-
-    def output_process(self, command):
-        process = subprocess.Popen(command, stdout=subprocess.PIPE)
-        output = process.communicate()[0]
-        if output:
-            print output
-
-    def run(self):
-        if self.pep8:
-            print "Running PEP8 checks..."
-            self.output_process("./tools/pep8")
-
-        if self.pylint:
-            print "Running pylint checks..."
-            self.output_process("./tools/pylint")
-
-        if self.test:
-            print "Running unit/functional tests..."
-            self.output_process("./tools/run_tests")
 
 
 setuptools.setup(
@@ -69,5 +29,4 @@ setuptools.setup(
     test_suite = "nose.collector",
     packages=setuptools.find_packages(where="src"),
     package_dir={"openstack": "src/openstack"},
-    cmdclass={"code_compliance": CodeComplianceCommand},
 )
