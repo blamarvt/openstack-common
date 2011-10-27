@@ -156,7 +156,21 @@ class AuthTestCase(unittest.TestCase):
             self.middleware(self.request)
 
     def test_auth_with_valid_token(self):
-        """Unable to validate token, validate_token returns object."""
+        """Able to validate token, validate_token returns object."""
         self.request.headers["X-Auth-Token"] = "valid_token"
         self.token_response = self._VALID_RESPONSE
         self.middleware(self.request)
+
+    def test_auth_with_valid_token_bad_response(self):
+        """Able to validate token, but get back bad response."""
+        self.request.headers["X-Auth-Token"] = "valid_token_bad_response"
+        self.token_response = {}
+        with self.assertRaises(webob.exc.HTTPUnauthorized):
+            self.middleware(self.request)
+
+    def test_auth_with_valid_token_bad_response_type(self):
+        """Able to validate token, but get back bad response."""
+        self.request.headers["X-Auth-Token"] = "valid_token_bad_response"
+        self.token_response = ""
+        with self.assertRaises(webob.exc.HTTPUnauthorized):
+            self.middleware(self.request)

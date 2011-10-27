@@ -73,10 +73,13 @@ class TokenAuth(openstack.common.wsgi.base.Middleware):
         if auth_response is None:
             raise self._reject_request()
 
-        user = auth_response["access"]["user"]
-        user_name = user["name"]
-        tenant_id = 0  # NOTE(blamarvt): This does not seem to be returned
-        roles = [role["name"] for role in user["roles"]]
+        try:
+            user = auth_response["access"]["user"]
+            user_name = user["name"]
+            tenant_id = 0  # NOTE(blamarvt): This does not seem to be returned
+            roles = [role["name"] for role in user["roles"]]
+        except (KeyError, TypeError):
+            raise self._reject_request()
 
         request.headers["X-Authorization"] = "Proxy %s" % user_name
         request.headers["X-Tenant-ID"] = tenant_id
