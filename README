@@ -10,9 +10,9 @@ openstack-common include:
  * Logging
  * Configuration
  * i18n Translation
- * Database
- * WSGI
- * AMQP
+ * Common database logic
+ * WSGI server/application/middleware
+ * AMQP/RPC
  * Performance metrics
 
 OpenStack projects are not required to use the code provided by openstack-common,
@@ -21,8 +21,17 @@ but it is highly recommended.
 
 Common Developer Tasks
 ----------------------
-> $ python setup.py test
-> $ python setup.py pep8
-> $ python setup.py pylint
-> $ python setup.py develop (not available on all systems)
+Run PEP8 compliance task:
+> $ tools/pep8
+
+Run pylint code compliance task:
+> $ tools/pylint
+
+Run tests and show tests coverage report:
+> $ nosetests
+
+Install this checkout locally, not overriding system libraries:
+> $ python setup.py develop
+
+Install this checkout locally, overriding system libraries:
 > $ python setup.py install 
