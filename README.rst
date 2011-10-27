@@ -22,16 +22,16 @@ but it is highly recommended.
 Common Developer Tasks
 ----------------------
 Run PEP8 compliance task:
-> $ tools/pep8
+    ``$ tools/pep8``
 
 Run pylint code compliance task:
-> $ tools/pylint
+    ``$ tools/pylint``
 
 Run tests and show tests coverage report:
-> $ nosetests
+    ``$ nosetests``
 
 Install this checkout locally, not overriding system libraries:
-> $ python setup.py develop
+    ``$ python setup.py develop``
 
 Install this checkout locally, overriding system libraries:
-> $ python setup.py install 
+    ``$ python setup.py install``
