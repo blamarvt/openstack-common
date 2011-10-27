@@ -1,7 +1,17 @@
 #!/bin/bash
 TOOLS="$( cd "$( dirname "$0" )" && pwd )"
 VENV_DIR=$TOOLS/../.venv
+CLEAN=0
 
-$TOOLS/install_venv
+for arg in $*
+do
+    case $arg in
+        --clean) CLEAN=1;;
+    esac
+done
+
+if [[ ! -d $VENV_DIR || $CLEAN -eq 1 ]]; then
+    $TOOLS/install_venv
+fi
 
 $VENV_DIR/bin/python $VENV_DIR/bin/nosetests

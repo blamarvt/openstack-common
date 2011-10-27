@@ -1,0 +1,57 @@
+#!/bin/bash
+
+TOOLS="$( cd "$( dirname "$0" )" && pwd )"
+VENV_DIR=$TOOLS/../.venv
+INSTALL_DEPS=1
+UPGRADE_DEPS=0
+
+destroy_venv() {
+    rm -rf $VENV_DIR
+}
+
+install_venv() {
+    echo -n "Creating venv..."
+    virtualenv --no-site-packages -q $VENV_DIR || exit
+    echo "ok"
+}
+
+install_pip() {
+    echo -n "Installing pip in venv..."
+    $VENV_DIR/bin/easy_install pip > /dev/null || exit
+    echo "ok"
+}
+
+install_deps() {
+    echo -n "Installing modules in pip-requires..."
+    $VENV_DIR/bin/pip install -E $VENV_DIR -r $TOOLS/pip-requires > /dev/null || exit
+    echo "ok"
+}
+
+upgrade_deps() {
+    echo -n "Upgrade modules in pip-requires..."
+    $VENV_DIR/bin/pip install -E $VENV_DIR -r $TOOLS/pip-requires --upgrade > /dev/null || exit
+    echo "ok"
+}
+
+### Start Script
+
+for option in $*
+do
+    case $option in
+        --upgrade)
+        UPGRADE_DEPS=1
+        INSTALL_DEPS=0;;
+    esac
+done
+
+if [[ -d $VENV_DIR ]]; then
+    destroy_venv
+    install_venv
+    install_pip
+fi
+
+if [[ $INSTALL_DEPS -eq 1 ]]; then
+    install_deps
+elif [[ $UPGRADE_DEPS -eq 1 ]]; then
+    upgrade_deps
+fi

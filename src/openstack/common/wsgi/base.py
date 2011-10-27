@@ -44,3 +44,56 @@ class Middleware(object):
             response = self._process_response(response)
 
         return response
+
+
+class Router(object):
+    """Routes WSGI requests using `routes` mapper."""
+
+    def __init__(self, mapper):
+        """
+        Create a router for the given routes.Mapper.
+
+        Each route in `mapper` must specify a 'controller', which is a
+        WSGI app to call.  You'll probably want to specify an 'action' as
+        well and have your controller be an object that can route
+        the request to the action-specific method.
+
+        Examples:
+          mapper = routes.Mapper()
+          sc = ServerController()
+
+          # Explicit mapping of one route to a controller+action
+          mapper.connect(None, '/svrlist', controller=sc, action='list')
+
+          # Actions are all implicitly defined
+          mapper.resource('server', 'servers', controller=sc)
+
+          # Pointing to an arbitrary WSGI app.  You can specify the
+          # {path_info:.*} parameter so the target app can be handed just that
+          # section of the URL.
+          mapper.connect(None, '/v1.0/{path_info:.*}', controller=BlogApp())
+
+        """
+        self._mapper = mapper
+        self._router = routes.middleware.RoutesMiddleware(self._dispatch,
+                                                          self._mapper)
+
+    @webob.dec.wsgify
+    def __call__(self, _request):
+        """Route the incoming request to a controller."""
+        return self._router
+
+    @staticmethod
+    @webob.dec.wsgify
+    def _dispatch(request):
+        """
+        Dispatch the request to the appropriate controller.
+
+        Called by self._router after matching the incoming request to a route
+        and putting the information into req.environ.  Either returns 404
+        or the routed WSGI app's response.
+        """
+        match = request.environ["wsgiorg.routing_args"][1]
+        if match is None:
+            raise webob.exc.HTTPNotFound()
+        return match["controller"]

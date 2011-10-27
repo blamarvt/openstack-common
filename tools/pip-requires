@@ -1,0 +1,5 @@
+eventlet
+nose
+nose-cov
+unittest2
+webob
