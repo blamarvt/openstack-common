@@ -16,6 +16,9 @@
 #    under the License.
 
 import eventlet.wsgi
+import greenlet
+
+import openstack.common.logging
 
 
 class Server(object):
@@ -30,16 +33,17 @@ class Server(object):
         self.host = host or self._default_host
         self.port = port or self._default_port
         self._app = app
-        self._pool = eventlet.GreenPool(pool_size or self.default_pool_size)
+        self._pool = eventlet.GreenPool(pool_size or self._default_pool_size)
         self._server = None
         self._socket = None
+        self._logger = openstack.common.logging.Logger(self.__class__.__name__)
 
     def __start(self):
         """Start eventlet server."""
         eventlet.wsgi.server(self._socket,
                              self._app,
                              custom_pool=self._pool,
-                             log=self._wsgi_logger)
+                             log=self._logger)
 
     def start(self, backlog=128):
         """Start eventlet thread which starts the server."""

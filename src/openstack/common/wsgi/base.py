@@ -1,5 +1,6 @@
 """Base class for other `openstack.common.wsgi` classes."""
 
+import routes.middleware
 import webob.dec
 
 
@@ -93,7 +94,12 @@ class Router(object):
         and putting the information into req.environ.  Either returns 404
         or the routed WSGI app's response.
         """
-        match = request.environ["wsgiorg.routing_args"][1]
+        try:
+            match = request.environ["wsgiorg.routing_args"][1]
+        except KeyError:
+            raise webob.exc.HTTPInternalServerError()
+
         if match is None:
             raise webob.exc.HTTPNotFound()
+
         return match["controller"]

@@ -1,5 +1,6 @@
 eventlet
 nose
 nose-cov
+routes
 unittest2
 webob
