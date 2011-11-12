@@ -27,6 +27,9 @@ Run PEP8 compliance task:
 Run pylint code compliance task:
     ``$ tools/pylint``
 
+Run tests and show test coverage report (in a virtual environment):
+    ``$ tools/run_tests``
+
 Run tests and show test coverage report:
     ``$ nosetests``
 
