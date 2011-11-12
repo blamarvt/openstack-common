@@ -75,9 +75,9 @@ class Router(object):
           mapper.connect(None, '/v1.0/{path_info:.*}', controller=BlogApp())
 
         """
-        self._mapper = mapper
-        self._router = routes.middleware.RoutesMiddleware(self._dispatch,
-                                                          self._mapper)
+        self.mapper = mapper
+        self._router = routes.middleware.RoutesMiddleware(self.dispatch,
+                                                          self.mapper)
 
     @webob.dec.wsgify
     def __call__(self, _request):
@@ -86,7 +86,7 @@ class Router(object):
 
     @staticmethod
     @webob.dec.wsgify
-    def _dispatch(request):
+    def dispatch(request):
         """
         Dispatch the request to the appropriate controller.
 

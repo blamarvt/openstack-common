@@ -1,14 +1,10 @@
-import datatypes
-import registry
+from .datatypes import Boolean
+from .datatypes import Class
+from .datatypes import Integer
+from .datatypes import String
+from .registry import ConfigRegistry
 
 
 # Easy-access configuration methods
-add_option = registry.ConfigRegistry.add_option
-get_section = registry.ConfigRegistry.get_section
-
-
-# Easy-access configuration datatypes
-Integer = datatypes.Integer
-Class = datatypes.Class
-String = datatypes.String
-Boolean = datatypes.Boolean
+add_option = ConfigRegistry.add_option  # pylint: disable=C0103
+get_section = ConfigRegistry.get_section  # pylint: disable=C0103

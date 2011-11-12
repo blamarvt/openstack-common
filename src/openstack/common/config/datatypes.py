@@ -1,14 +1,21 @@
-class Integer(object):
+class Datatype(object):
+
+    @staticmethod
+    def format_value(value):
+        return value
+
+
+class Integer(Datatype):
     pass
 
 
-class String(object):
+class String(Datatype):
     pass
 
 
-class Class(object):
+class Class(Datatype):
     pass
 
 
-class Boolean(object):
+class Boolean(Datatype):
     pass

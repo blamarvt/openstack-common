@@ -85,18 +85,18 @@ class RouterTestCase(unittest.TestCase):
         self.router = openstack.common.wsgi.base.Router(mapper)
 
     def test_router_call(self):
-        self.assertEquals(self.router._router, self.router(self.request))
+        self.assertEquals(True, self.router(self.request).path_info)
 
     def test_router_dispatch_error(self):
         with self.assertRaises(webob.exc.HTTPInternalServerError):
-            self.router._dispatch(self.request)
+            self.router.dispatch(self.request)
 
     def test_router_dispatch_not_found(self):
         self.request.environ["wsgiorg.routing_args"] = (None, None)
         with self.assertRaises(webob.exc.HTTPNotFound):
-            self.router._dispatch(self.request)
+            self.router.dispatch(self.request)
 
     def test_router_dispatch(self):
         routing_args = (None, {"controller": "test_router"})
         self.request.environ["wsgiorg.routing_args"] = routing_args
-        self.assertEquals("test_router", self.router._dispatch(self.request))
+        self.assertEquals("test_router", self.router.dispatch(self.request))

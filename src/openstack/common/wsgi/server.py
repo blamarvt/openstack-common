@@ -30,13 +30,14 @@ class Server(object):
 
     def __init__(self, name, app, host=None, port=None, pool_size=None):
         """Initialize eventlet-based WSGI server."""
+        self.name = name
         self.host = host or self._default_host
         self.port = port or self._default_port
         self._app = app
         self._pool = eventlet.GreenPool(pool_size or self._default_pool_size)
         self._server = None
         self._socket = None
-        self._logger = openstack.common.logging.Logger(self.__class__.__name__)
+        self._logger = openstack.common.logging.Logger(self.name)
 
     def __start(self):
         """Start eventlet server."""
