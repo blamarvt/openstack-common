@@ -4,19 +4,18 @@ Provides components which are re-used across multiple OpenStack projects. Each
 component provided by openstack-common should be generic enough to stand on it's
 own and should ideally already be in use by one or more OpenStack projects.
 
-Good examples of generic components which should be transitioned to
-openstack-common include:
+Components
+~~~~~~~~~~
+The follow are generic components currently available in `openstack.common`:
 
  * Logging
  * Configuration
- * i18n Translation
- * Common database logic
- * WSGI server/application/middleware
- * AMQP/RPC
- * Performance metrics
+ * WSGI
+  * Frequently-used WSGI middleware
+  * `paste.deploy` factory classes
 
-OpenStack projects are not required to use the code provided by openstack-common,
-but it is highly recommended. 
+OpenStack projects are not required to use the code provided by
+`openstack.common`, but it is highly recommended. 
 
 
 Common Developer Tasks
