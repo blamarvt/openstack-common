@@ -26,6 +26,11 @@ import openstack.common.exceptions as exceptions
 class ConfigRegistryTestCase(unittest.TestCase):
     """Tests for configuration registry."""
 
+    test_config = """
+        [logging]
+        blah=test
+    """.strip().replace("\n        ", "\n")
+
     def test_get_nonexistant_option(self):
         """Try to get a configuration option that doesn't exist."""
         registry = openstack.common.config.registry.Registry()
@@ -45,7 +50,8 @@ class ConfigRegistryTestCase(unittest.TestCase):
     def test_load_registry(self):
         """Test loading the registry."""
         registry = openstack.common.config.registry.Registry()
-        registry.load(StringIO.StringIO())
+        registry.load(StringIO.StringIO(self.test_config))
+        self.assertEquals("test", registry.get("logging", "blah"))
 
 
 

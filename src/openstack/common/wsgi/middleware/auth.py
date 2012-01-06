@@ -52,7 +52,7 @@ class TokenAuth(openstack.common.wsgi.base.Middleware):
         body_msg = _("Authentication Required")
         header_msg = _("Authenticate at %s") % self._client.auth_url
         headers = [("WWW-Authenticate", header_msg)]
-        raise webob.exc.HTTPUnauthorized(body_msg, headers)
+        return webob.exc.HTTPUnauthorized(body_msg, headers)
 
     def _process_request(self, request):
         """Authenticate the given request.

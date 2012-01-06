@@ -58,25 +58,20 @@ class Logger(logging.Logger):
         logging.Logger.__init__(self, name)
         self._name = name
 
-        for handler in self._get_handlers():
-            self.addHandler(handler)
-
-    def _get_handlers(self):
-        """Read the config and determine which handlers will be used."""
         log_to_stderr = CONFIG.get("logging", "log_to_fd")
         if log_to_stderr is True:
             logging_fd = CONFIG.get("logging", "logging_fd")
-            yield logging.StreamHandler(logging_fd)
+            self.addHandler(logging.StreamHandler(logging_fd))
 
         log_to_syslog = CONFIG.get("logging", "log_to_syslog")
         if log_to_syslog is True:
             syslog_device = CONFIG.get("logging", "syslog_device")
-            yield logging.handlers.SysLogHandler(syslog_device)
+            self.addHandler(logging.handlers.SysLogHandler(syslog_device))
 
         log_to_file = CONFIG.get("logging", "log_to_file")
         if log_to_file is True:
             log_file = CONFIG.get("logging", "log_file")
-            yield logging.handlers.WatchedFileHandler(log_file)
+            self.addHandler(logging.handlers.WatchedFileHandler(log_file))
 
     def write(self, message):
         """Write a message to the logger (INFO level)."""
