@@ -3,9 +3,10 @@ class ExceptionWithMessage(Exception):
 
     def __init__(self, **kwargs):
         """Initialize exception with keyword arguments."""
+        Exception.__init__(self)
         self.message = self.message % kwargs
 
 
 class NoSuchConfigOption(ExceptionWithMessage):
-    message = _("No option '%(option_name)s' defined for config "
-                "section '%(section_name)s'.")
+    message = _("No option '%(option)s' defined for config "
+                "section '%(section)s'.")

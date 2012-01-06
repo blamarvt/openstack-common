@@ -14,12 +14,13 @@
 #    under the License.
 
 import os
-import tempfile
+import StringIO
 
 import unittest2 as unittest
 
+import openstack.common.config as config
+import openstack.common.config.registry
 import openstack.common.exceptions as exceptions
-import openstack.common.config.registry as registry
 
 
 class ConfigRegistryTestCase(unittest.TestCase):
@@ -27,30 +28,46 @@ class ConfigRegistryTestCase(unittest.TestCase):
 
     def test_get_nonexistant_option(self):
         """Try to get a configuration option that doesn't exist."""
+        registry = openstack.common.config.registry.Registry()
         with self.assertRaises(exceptions.NoSuchConfigOption):
-            registry.ConfigRegistry.get("section", None)
+            registry.get("section", None)
 
     def test_find_config_file(self):
         """Test the find_config_file functionality."""
-        old_search_dirs = registry.ConfigRegistry.search_dirs
-        temp_dir = tempfile.mkdtemp()
+        os_path_exists = os.path.exists
+        try:
+            os.path.exists = lambda path: path == "/etc/test_app.conf"
+            self.assertEquals("/etc/test_app.conf",
+                              config.find_config("test_app"))
+        finally:
+            os.path.exists = os_path_exists
 
-        temp_config = os.path.join(temp_dir, "openstack-common.conf")
-        open(temp_config, 'a').close()
+    def test_load_registry(self):
+        """Test loading the registry."""
+        registry = openstack.common.config.registry.Registry()
+        registry.load(StringIO.StringIO())
 
-        registry.ConfigRegistry.search_dirs = [temp_dir]
 
-        self.assertEquals(temp_config,
-                          registry.ConfigRegistry.find_config_file())
 
-        registry.ConfigRegistry.search_dirs = old_search_dirs
-        os.remove(temp_config)
-        os.removedirs(temp_dir)
-
-    def test_load_from_path(self):
-        """Tests loading a config from a file."""
-        old_search_dirs = registry.ConfigRegistry.search_dirs
-        temp_dir = tempfile.mkdtemp()
-
-        temp_config = os.path.join(temp_dir, "openstack-common.conf")
-        open(temp_config, 'a').close()
+#        old_search_dirs = registry.ConfigRegistry.search_dirs
+#        temp_dir = tempfile.mkdtemp()
+#
+#        temp_config = os.path.join(temp_dir, "openstack-common.conf")
+#        open(temp_config, 'a').close()
+#
+#        registry.ConfigRegistry.search_dirs = [temp_dir]
+#
+#        self.assertEquals(temp_config,
+#                          registry.ConfigRegistry.find_config_file())
+#
+#        registry.ConfigRegistry.search_dirs = old_search_dirs
+#        os.remove(temp_config)
+#        os.removedirs(temp_dir)
+#
+#    def test_load_from_path(self):
+#        """Tests loading a config from a file."""
+#        old_search_dirs = registry.ConfigRegistry.search_dirs
+#        temp_dir = tempfile.mkdtemp()
+#
+#        temp_config = os.path.join(temp_dir, "openstack-common.conf")
+#        open(temp_config, 'a').close()

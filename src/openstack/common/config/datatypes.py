@@ -1,21 +1,27 @@
 class Datatype(object):
 
-    @staticmethod
-    def format_value(value):
-        return value
+    _default = None
+
+    def __init__(self, name, description, default=None):
+        self.name = name
+        self.description = description
+        self.value = default or self._default
+
+    def from_parser(self, parser):
+        pass
 
 
 class Integer(Datatype):
-    pass
+    _default = 0
 
 
 class String(Datatype):
-    pass
+    _default = ""
 
 
 class Class(Datatype):
-    pass
+    _default = None
 
 
 class Boolean(Datatype):
-    pass
+    _default = None
