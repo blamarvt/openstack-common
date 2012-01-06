@@ -3,8 +3,8 @@ DIR="$( cd "$( dirname "$0" )" && pwd )"
 
 # Checking source
 export PYTHONPATH="$DIR/../src"
-pylint --rcfile=tools/pylintrc openstack.common
+pylint --rcfile=$DIR/pylintrc openstack.common
 
 # Checking tests
 export PYTHONPATH="$DIR/..:$DIR/../src"
-pylint --rcfile=tools/pylintrc tests
+pylint --rcfile=$DIR/pylintrc tests

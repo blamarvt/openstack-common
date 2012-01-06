@@ -4,3 +4,5 @@ nose-cov
 routes
 unittest2
 webob
+pylint
+pep8

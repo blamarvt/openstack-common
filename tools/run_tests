@@ -1,6 +1,5 @@
 #!/bin/bash
 TOOLS="$( cd "$( dirname "$0" )" && pwd )"
-VENV_DIR=$TOOLS/../.venv
 CLEAN=0
 
 for arg in $*
@@ -10,8 +9,10 @@ do
     esac
 done
 
-if [[ ! -d $VENV_DIR || $CLEAN -eq 1 ]]; then
-    $TOOLS/install_venv
+if [[ $CLEAN -eq 1 ]]; then
+	cd $TOOLS/..
+    tox -r -c $TOOLS/tox.ini -e ALL
+else
+	cd $TOOLS/..
+	tox -c $TOOLS/tox.ini -e ALL
 fi
-
-$VENV_DIR/bin/python $VENV_DIR/bin/nosetests

@@ -1,4 +1,4 @@
 #!/bin/bash
-
-FILES=`find src/openstack/ -name "*.py"`
+DIR="$( cd "$( dirname "$0" )" && pwd )"
+FILES=`find $DIR/../src/openstack/ -name "*.py"`
 pep8 --repeat --show-pep8 --show-source $FILES
