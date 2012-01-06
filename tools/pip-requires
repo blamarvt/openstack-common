@@ -4,5 +4,5 @@ nose-cov
 routes
 unittest2
 webob
-pylint
+pylint==0.24
 pep8

@@ -1,10 +1,10 @@
 #!/bin/bash
 DIR="$( cd "$( dirname "$0" )" && pwd )"
 
+export PYTHONPATH="$PYTHONPATH:$DIR/..:$DIR/../src"
+
 # Checking source
-export PYTHONPATH="$DIR/../src"
 pylint --rcfile=$DIR/pylintrc openstack.common
 
 # Checking tests
-export PYTHONPATH="$DIR/..:$DIR/../src"
 pylint --rcfile=$DIR/pylintrc tests
