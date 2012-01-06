@@ -3,6 +3,7 @@ import os
 from .datatypes import Boolean
 from .datatypes import Class
 from .datatypes import Integer
+from .datatypes import Object
 from .datatypes import String
 from .registry import Registry
 
@@ -14,6 +15,7 @@ REGISTRY = Registry()
 # Easy-access configuration methods
 define = REGISTRY.define  # pylint: disable=C0103
 get = REGISTRY.get # pylint: disable=C0103
+set = REGISTRY.set # pylint: disable=C0103
 
 
 def find_config(app_name):

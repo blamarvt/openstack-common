@@ -2,15 +2,23 @@ from __future__ import absolute_import
 
 import logging
 import logging.handlers
+import sys
 
 import openstack.common.config as CONFIG
 
 
 CONFIG.define(section="logging",
-              name="log_to_stderr",
+              name="log_to_fd",
               datatype=CONFIG.Boolean,
               default=True,
-              description="If True, stderr logging will be enabled.")
+              description="If True, log to a file descriptor.")
+
+
+CONFIG.define(section="logging",
+              name="logging_fd",
+              datatype=CONFIG.Object,
+              default=sys.stderr,
+              description="If log_to_fd, the file descriptor object to use.")
 
 
 CONFIG.define(section="logging",
@@ -55,9 +63,10 @@ class Logger(logging.Logger):
 
     def _get_handlers(self):
         """Read the config and determine which handlers will be used."""
-        log_to_stderr = CONFIG.get("logging", "log_to_stderr")
+        log_to_stderr = CONFIG.get("logging", "log_to_fd")
         if log_to_stderr is True:
-            yield logging.StreamHandler()
+            logging_fd = CONFIG.get("logging", "logging_fd")
+            yield logging.StreamHandler(logging_fd)
 
         log_to_syslog = CONFIG.get("logging", "log_to_syslog")
         if log_to_syslog is True:
@@ -66,7 +75,7 @@ class Logger(logging.Logger):
 
         log_to_file = CONFIG.get("logging", "log_to_file")
         if log_to_file is True:
-            log_file = CONFIG.get("loggin", "log_file")
+            log_file = CONFIG.get("logging", "log_file")
             yield logging.handlers.WatchedFileHandler(log_file)
 
     def write(self, message):

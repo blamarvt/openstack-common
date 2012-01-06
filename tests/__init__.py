@@ -12,3 +12,16 @@
 #    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #    License for the specific language governing permissions and limitations
 #    under the License.
+
+import sys
+import tempfile
+
+import openstack.common.config
+
+
+def setup():
+    log_file = tempfile.NamedTemporaryFile()
+    openstack.common.config.set("logging", "logging_fd", sys.stdout)
+    openstack.common.config.set("logging", "log_to_syslog", True)
+    openstack.common.config.set("logging", "log_to_file", True)
+    openstack.common.config.set("logging", "log_file", log_file.name)

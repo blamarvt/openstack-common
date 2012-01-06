@@ -19,6 +19,10 @@ class Registry(object):
         except KeyError:
             raise exceptions.NoSuchConfigOption(section=section, option=option)
 
+    def set(self, section, option, value):
+        """Set the value of a particular config option."""
+        self._data[section][option].value = value
+
     def load(self, config_file):
         """Load a configuration file into the registry."""
         self._parser.readfp(config_file)

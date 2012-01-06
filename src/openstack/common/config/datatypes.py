@@ -8,7 +8,7 @@ class Datatype(object):
         self.value = default or self._default
 
     def from_parser(self, parser):
-        pass
+        return self.value
 
 
 class Integer(Datatype):
@@ -23,5 +23,9 @@ class Class(Datatype):
     _default = None
 
 
-class Boolean(Datatype):
+class Object(Datatype):
     _default = None
+
+
+class Boolean(Datatype):
+    _default = False

@@ -8,8 +8,9 @@ Components
 ~~~~~~~~~~
 The follow are generic components currently available in `openstack.common`:
 
- * Logging
  * Configuration
+  - `openstack.common.config:Registry`
+ * Logging
  * WSGI
   - Frequently-used WSGI middleware
   - `paste.deploy` factory classes
