@@ -11,8 +11,8 @@ The follow are generic components currently available in `openstack.common`:
  * Logging
  * Configuration
  * WSGI
-  * Frequently-used WSGI middleware
-  * `paste.deploy` factory classes
+  - Frequently-used WSGI middleware
+  - `paste.deploy` factory classes
 
 OpenStack projects are not required to use the code provided by
 `openstack.common`, but it is highly recommended. 
