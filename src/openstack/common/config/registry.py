@@ -10,6 +10,7 @@ class Registry(object):
     def __init__(self):
         """Initialize a new configuration registry."""
         self._data = collections.defaultdict(dict)
+        self._junk = collections.defaultdict(dict)
         self._parser = ConfigParser.ConfigParser()
 
     def get(self, section, option):
@@ -17,22 +18,17 @@ class Registry(object):
         try:
             # Returning a value in the config which has been 'defined'
             return self._data[section][option].from_parser(self._parser)
-        except AttributeError:
-            # Returning a value in the config, but not 'defined'
-            return self._data[section][option]
         except KeyError:
-            # Requested value has not been 'defined', nor is it in the config
+            # Requested value has not been 'defined'
             raise exceptions.NoSuchConfigOption(section=section, option=option)
 
     def set(self, section, option, value):
         """Set the value of a particular config option."""
         try:
-            item = self._data[section][option]
-            item.value = value
+            self._data[section][option].value = value
         except KeyError:
-            item = value
-
-        self._data[section][option] = item
+            # Value hasn't been defined yet, so throw it in junk
+            self._junk[section][option] = value
 
     def load(self, config_file):
         """Load a configuration file into the registry."""
@@ -52,4 +48,8 @@ class Registry(object):
         :returns: None
 
         """
-        self._data[section][name] = datatype(name, description, default)
+        item = datatype(name, description, default)
+        if name in self._junk[section]:
+            item.value = self._junk[section][name]
+
+        self._data[section][name] = item

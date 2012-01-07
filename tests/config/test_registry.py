@@ -29,6 +29,7 @@ class ConfigRegistryTestCase(unittest.TestCase):
     test_config = """
         [logging]
         blah=test
+        log_file=override
     """.strip().replace("\n        ", "\n")
 
     def test_get_nonexistant_option(self):
@@ -47,11 +48,35 @@ class ConfigRegistryTestCase(unittest.TestCase):
         finally:
             os.path.exists = os_path_exists
 
-    def test_load_registry(self):
+    def test_load_registry_undefined(self):
         """Test loading the registry."""
         registry = openstack.common.config.registry.Registry()
         registry.load(StringIO.StringIO(self.test_config))
-        self.assertEquals("test", registry.get("logging", "blah"))
+        with self.assertRaises(exceptions.NoSuchConfigOption):
+            registry.get("logging", "blah")
+
+    def test_load_registry_then_define(self):
+        """Test loading the registry."""
+        registry = openstack.common.config.registry.Registry()
+        registry.load(StringIO.StringIO(self.test_config))
+        registry.define(section="logging",
+                        name="log_file",
+                        datatype=config.String,
+                        default="default",
+                        description="Test description.")
+        self.assertEquals("override", registry.get("logging", "log_file"))
+
+    def test_define_then_load_registry(self):
+        """Test loading the registry."""
+        registry = openstack.common.config.registry.Registry()
+        registry.define(section="logging",
+                        name="log_file",
+                        datatype=config.String,
+                        default="default",
+                        description="Test description.")
+        registry.load(StringIO.StringIO(self.test_config))
+        self.assertEquals("override", registry.get("logging", "log_file"))
+
 
 
 
