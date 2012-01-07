@@ -1,18 +1,37 @@
 #!/bin/bash
+
 TOOLS="$( cd "$( dirname "$0" )" && pwd )"
 CLEAN=0
+ENV="ALL"
+
+USAGE=$(cat <<END_USAGE
+usage: $0 [-h] [--help] [-c] [--clean] [-e] [--env]
+
+optional arguments:
+  -h, --help        show this help message and exit
+  -c                clean virtual environments before running
+  -e=env, --env=e   work against specified environments (ALL selects all).
+                  
+environments available:
+  test              run all unit tests
+  pep8              run pep8 compliance tests
+  pylint            run pylint compliance tests
+
+END_USAGE
+)
+
 
 for arg in $*
 do
     case $arg in
-        --clean) CLEAN=1;;
+        -c|--clean) CLEAN=1;;
+		-e=*|--env=*) ENV=`echo $arg | sed 's/[-a-zA-Z0-9]*=//'`;;
+		-h|--help) echo "$USAGE"; exit 0;;
     esac
 done
 
 if [[ $CLEAN -eq 1 ]]; then
-	cd $TOOLS/..
-    tox -r -c $TOOLS/tox.ini -e ALL
+    tox -r -c $TOOLS/tox.ini -e $ENV
 else
-	cd $TOOLS/..
-	tox -c $TOOLS/tox.ini -e ALL
+	tox -c $TOOLS/tox.ini -e $ENV
 fi

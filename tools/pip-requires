@@ -6,3 +6,4 @@ unittest2
 webob
 pylint==0.24
 pep8
+tissue
