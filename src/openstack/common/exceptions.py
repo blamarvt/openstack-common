@@ -10,3 +10,8 @@ class ExceptionWithMessage(Exception):
 class NoSuchConfigOption(ExceptionWithMessage):
     message = _("No option '%(option)s' defined for config "
                 "section '%(section)s'.")
+
+
+class OptionRedefined(ExceptionWithMessage):
+    message = _("Config option '%(option)s' in section '%(section)s' "
+                "cannot be redefined.")

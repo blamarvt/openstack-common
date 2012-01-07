@@ -52,4 +52,7 @@ class Registry(object):
         if name in self._junk[section]:
             item.value = self._junk[section][name]
 
+        if name in self._data[section]:
+            raise exceptions.OptionRedefined(section=section, option=name)
+
         self._data[section][name] = item

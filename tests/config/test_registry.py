@@ -77,28 +77,17 @@ class ConfigRegistryTestCase(unittest.TestCase):
         registry.load(StringIO.StringIO(self.test_config))
         self.assertEquals("override", registry.get("logging", "log_file"))
 
+    def test_redefine(self):
+        registry = openstack.common.config.registry.Registry()
+        registry.define(section="logging",
+                        name="log_file",
+                        datatype=config.String,
+                        default="default",
+                        description="Test description.")
 
-
-
-#        old_search_dirs = registry.ConfigRegistry.search_dirs
-#        temp_dir = tempfile.mkdtemp()
-#
-#        temp_config = os.path.join(temp_dir, "openstack-common.conf")
-#        open(temp_config, 'a').close()
-#
-#        registry.ConfigRegistry.search_dirs = [temp_dir]
-#
-#        self.assertEquals(temp_config,
-#                          registry.ConfigRegistry.find_config_file())
-#
-#        registry.ConfigRegistry.search_dirs = old_search_dirs
-#        os.remove(temp_config)
-#        os.removedirs(temp_dir)
-#
-#    def test_load_from_path(self):
-#        """Tests loading a config from a file."""
-#        old_search_dirs = registry.ConfigRegistry.search_dirs
-#        temp_dir = tempfile.mkdtemp()
-#
-#        temp_config = os.path.join(temp_dir, "openstack-common.conf")
-#        open(temp_config, 'a').close()
+        with self.assertRaises(exceptions.OptionRedefined):
+            registry.define(section="logging",
+                            name="log_file",
+                            datatype=config.String,
+                            default="default",
+                            description="Test description.")
