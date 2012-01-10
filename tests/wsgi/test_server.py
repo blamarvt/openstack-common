@@ -18,22 +18,24 @@ import time
 import eventlet.patcher
 import unittest2 as unittest
 
+import openstack.common.test
 import openstack.common.wsgi.server
 
 
-class ServerTestCase(unittest.TestCase):
+class ServerTestCase(openstack.common.test.TestCase):
     """Tests for WSGI server."""
 
     def setUp(self):
         """Run before every test."""
         eventlet.monkey_patch()
-        self.server = openstack.common.wsgi.server.Server(name="test",
-                                                          app=None,
-                                                          host="127.0.0.1",
-                                                          port=0)
+        self.server = openstack.common.wsgi.server.Server(config=self.config,
+                                                          name="test",
+                                                          app=None)
 
     def test_wsgi_server_start_stop(self):
         self.server.start()
-        time.sleep(0)
+        time.sleep(0)  # FIXME: I sincerely hate sleeps
+        self.assertEquals(self.server.host, "0.0.0.0")
+        self.assertTrue(self.server.port > 0)
         self.server.stop()
         self.server.wait()

@@ -9,13 +9,13 @@ from .registry import Registry
 
 
 # Global registry
-REGISTRY = Registry()
+#REGISTRY = Registry()
 
 
 # Easy-access configuration methods
-define = REGISTRY.define  # pylint: disable=C0103
-get = REGISTRY.get  # pylint: disable=C0103
-set = REGISTRY.set  # pylint: disable=C0103
+#define = REGISTRY.define  # pylint: disable=C0103
+#get = REGISTRY.get  # pylint: disable=C0103
+#set = REGISTRY.set  # pylint: disable=C0103
 
 
 def find_config(app_name):

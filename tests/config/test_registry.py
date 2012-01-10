@@ -16,14 +16,13 @@
 import os
 import StringIO
 
-import unittest2 as unittest
-
+import openstack.common.test
 import openstack.common.config as config
 import openstack.common.config.registry
 import openstack.common.exceptions as exceptions
 
 
-class ConfigRegistryTestCase(unittest.TestCase):
+class ConfigRegistryTestCase(openstack.common.test.TestCase):
     """Tests for configuration registry."""
 
     test_config = """
