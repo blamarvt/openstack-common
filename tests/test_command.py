@@ -22,7 +22,7 @@ class CommandRegistryTestCase(openstack.common.test.TestCase):
     """Tests for command registry."""
 
     def setUp(self):
-        self._registry = openstack.common.command.Registry(self.config)
+        self._registry = openstack.common.command.Registry()
 
     def test_add_retrieve_command(self):
         self._registry.add(openstack.common.command.Command)
@@ -41,3 +41,15 @@ class CommandTestCase(openstack.common.test.TestCase):
     def test_execute_command(self):
         cmd = openstack.common.command.Command()
         self.assertEquals(None, cmd())
+
+
+class RemoteCommandTestCase(openstack.common.test.TestCase):
+    """Tests for remote command handling."""
+
+    def test_send_recv_remote_command(self):
+        remote_cmd = openstack.common.command.RemoteCommand(self.config)
+        cmd = openstack.common.command.EchoCommand(1, a=2)
+        remote_cmd.send(cmd, "test_service", "test_host")
+        expected = ((1,), {"a":2})
+        actual = remote_cmd.recv("test_service", "test_host")()
+        self.assertEquals(expected, actual)
