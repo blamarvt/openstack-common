@@ -14,6 +14,7 @@
 #    under the License.
 
 import openstack.common.command
+import openstack.common.exceptions as exceptions
 import openstack.common.test
 
 
@@ -24,9 +25,19 @@ class CommandRegistryTestCase(openstack.common.test.TestCase):
         self._registry = openstack.common.command.Registry(self.config)
 
     def test_add_retrieve_command(self):
-        class MyCommand(object):
-            name = "MyCommand"
-        self._registry.add(MyCommand, version=100)
-        expected = MyCommand
-        actual = self._registry.get("MyCommand", version=100)
+        self._registry.add(openstack.common.command.Command)
+        expected = openstack.common.command.Command
+        actual = self._registry.get("Command", version=1)
         self.assertEquals(expected, actual)
+
+    def test_retrieve_nonexistant_command(self):
+        with self.assertRaises(exceptions.NoSuchCommand):
+            self._registry.get("Command", version=1)
+
+
+class CommandTestCase(openstack.common.test.TestCase):
+    """Tests for commands."""
+
+    def test_execute_command(self):
+        cmd = openstack.common.command.Command()
+        self.assertEquals(None, cmd())

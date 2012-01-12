@@ -15,3 +15,7 @@ class NoSuchConfigOption(ExceptionWithMessage):
 class OptionRedefined(ExceptionWithMessage):
     message = _("Config option '%(option)s' in section '%(section)s' "
                 "cannot be redefined.")
+
+
+class NoSuchCommand(ExceptionWithMessage):
+    message = _("Version %(version)d of command %(name)s not found.")
